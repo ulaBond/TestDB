@@ -1,19 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
-/**
- *
- * @author pupil
- */
+
 @Entity
 public class Student {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)//генерирует уникальный ID-код
@@ -23,6 +20,8 @@ public class Student {
     private int day;
     private int mounth;
     private int year;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Groupname groupName;//для связи с таблицей Группа
 
     public Student() {
     }
@@ -74,16 +73,27 @@ public class Student {
     public void setYear(int year) {
         this.year = year;
     }
+    
+    public Groupname getGroupName() {
+            return groupName;
+        }
 
+        public void setGroupName(Groupname groupName) {
+            this.groupName = groupName;
+        }
     @Override
     public String toString() {
-        return "Student{"
-                + "id=" + id 
+        return "Student{" + "id=" + id 
                 + ", firstname=" + firstname 
                 + ", lastname=" + lastname 
                 + ", day=" + day 
                 + ", mounth=" + mounth 
-                + ", year=" + year + '}';
-    }    
+                + ", year=" + year 
+                + ", groupName=" + groupName + '}';
+    }
+
+    
+
+     
     
 }
