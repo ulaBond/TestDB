@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -20,8 +21,10 @@ public class Student {
     private int day;
     private int mounth;
     private int year;
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    private Groupname groupName;//для связи с таблицей Группа
+    @OneToOne
+    @JoinColumn(name = "groupstudents_fk")
+    private GroupStudents groupname;//для связи с GroupStudents
+    
 
     public Student() {
     }
@@ -74,13 +77,13 @@ public class Student {
         this.year = year;
     }
     
-    public Groupname getGroupName() {
-            return groupName;
-        }
+    public GroupStudents getGroupname() {
+        return groupname;
+    }
 
-        public void setGroupName(Groupname groupName) {
-            this.groupName = groupName;
-        }
+    public void setGroupname(GroupStudents groupname) {
+        this.groupname = groupname;
+    }
     @Override
     public String toString() {
         return "Student{" + "id=" + id 
@@ -88,12 +91,7 @@ public class Student {
                 + ", lastname=" + lastname 
                 + ", day=" + day 
                 + ", mounth=" + mounth 
-                + ", year=" + year 
-                + ", groupName=" + groupName + '}';
-    }
-
-    
-
-     
+                + ", year=" + year + '}';
+    }     
     
 }
