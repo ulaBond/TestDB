@@ -1,6 +1,7 @@
 
 package entity;
 
+import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +14,7 @@ import javax.persistence.OneToOne;
 
 
 @Entity
-public class Student {
+public class Student implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)//генерирует уникальный ID-код
     private Long  id;
     private String firstname;
@@ -22,8 +23,7 @@ public class Student {
     private int mounth;
     private int year;
     @OneToOne
-    @JoinColumn(name = "groupstudents_fk")
-    private GroupStudents groupname;//для связи с GroupStudents
+    private Groupname group;
     
 
     public Student() {
@@ -77,21 +77,25 @@ public class Student {
         this.year = year;
     }
     
-    public GroupStudents getGroupname() {
-        return groupname;
+    public Groupname getGroup() {
+        return group;
     }
 
-    public void setGroupname(GroupStudents groupname) {
-        this.groupname = groupname;
+    public void setGroup(Groupname group) {
+        this.group = group;
     }
     @Override
     public String toString() {
-        return "Student{" + "id=" + id 
-                + ", firstname=" + firstname 
-                + ", lastname=" + lastname 
-                + ", day=" + day 
-                + ", mounth=" + mounth 
-                + ", year=" + year + '}';
+        return "Student{" + "id= " + id 
+                + ", firstname= " + firstname 
+                + ", lastname= " + lastname 
+                + ", day= " + day 
+                + ", mounth= " + mounth 
+                + ", year= " + year 
+                + ", group= " + group 
+                +'}';
     }     
+
+    
     
 }

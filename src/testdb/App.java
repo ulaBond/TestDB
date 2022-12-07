@@ -1,23 +1,20 @@
 
 package testdb;
 
-import entity.GroupStudents;
 import entity.Groupname;
 import entity.Student;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-/*todo
-* добавить Entity группы 
-* сделать массив студентов 
-* */
+
 public class App {
     private List<Student> students;
     private List<Groupname> groupnames;
-    private List<GroupStudents> listgroupStudents;
+    
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("TestDBPU");
     private EntityManager em = emf.createEntityManager();
     private EntityTransaction tx = em.getTransaction();
@@ -25,12 +22,11 @@ public class App {
         try {
             students = em.createQuery("SELECT s FROM Student s").getResultList();
             groupnames = em.createQuery("SELECT gn FROM Groupname gn").getResultList();
-            listgroupStudents = em.createQuery("SELECT gs FROM GroupStudents gs").getResultList();
+            
         } catch (Exception e) {
             System.out.println("Запись в БД отсутствует.");
             students = new ArrayList<>();
             groupnames = new ArrayList<>();
-            listgroupStudents = new ArrayList<>();
         }
         
     }
@@ -39,53 +35,71 @@ public class App {
         tx.begin();
         
         if(students.isEmpty()){
-            Student student = new Student();
-            student.setFirstname("Ivan");
-            student.setLastname("Ivanov");
-            student.setDay(12);
-            student.setMounth(2);
-            student.setYear(2000);                
-            em.persist(student);
-            
             Groupname groupname = new Groupname();
             groupname.setGname("JKTV");
             groupname.setYear(2021);
             em.persist(groupname);
             
-            GroupStudents groupStudents = new GroupStudents();
-            groupStudents.setStudent(student);
-            groupStudents.setGroup(groupname);
-            em.persist(groupStudents);
-            //-------------------------------------------
-            student.setFirstname("Tatjana");
-            student.setLastname("Subbotina");
-            student.setDay(30);
-            student.setMounth(12);
-            student.setYear(2001);                
-            em.persist(student);//запись в БД
+            Student student = new Student();
+            student.setFirstname("Ivan");
+            student.setLastname("Ivanov");
+            student.setDay(12);
+            student.setMounth(2);
+            student.setYear(2000);  
+            student.setGroup(groupname);
+            em.persist(student);
             
+            groupname.getStudents().add(student);//добавляем студента в группу и обновляем БД
+            em.merge(groupname);
+            
+            student = new Student();
+            student.setFirstname("Aldo");
+            student.setLastname("Tamme");
+            student.setDay(10);
+            student.setMounth(5);
+            student.setYear(2001);  
+            student.setGroup(groupname);
+            em.persist(student);
+            
+            groupname.getStudents().add(student);//добавляем студента в группу и обновляем БД
+            em.merge(groupname);
+            //------------------- 2 group ------------------------
             groupname = new Groupname();
             groupname.setGname("JPTV");
             groupname.setYear(2022);
             em.persist(groupname);
             
-            groupStudents = new GroupStudents();
-            groupStudents.setStudent(student);
-            groupStudents.setGroup(groupname); 
-            em.persist(groupname);
+            student = new Student();
+            student.setFirstname("Boris");
+            student.setLastname("Semenov");
+            student.setDay(01);
+            student.setMounth(4);
+            student.setYear(2002);  
+            student.setGroup(groupname);
+            em.persist(student);
             
+            groupname.getStudents().add(student);//добавляем студента в группу и обновляем БД
+            em.merge(groupname);
             }
        
-        tx.commit();
-            List<GroupStudents> groupStudents = em.createQuery("SELECT gs FROM GroupStudents gs ORDER BY gs.student DESC").getResultList();
-            for (int i = 0; i < groupStudents.size(); i++) { 
-                GroupStudents gs = groupStudents.get(i);
-                gs.getGroup().setYear(2000);
+        tx.commit();   
+            System.out.println("----------------------Students:--------------------- ");        
+            for (int i = 0; i < students.size(); i++) { 
+                Student student = students.get(i);
                 System.out.printf("Student: %s %s, group: %s-%d%n"
-                        ,gs.getStudent().getFirstname()
-                        ,gs.getStudent().getLastname()
-                        ,gs.getGroup().getGname()
-                        ,gs.getGroup().getYear()
+                        ,student.getFirstname()
+                        ,student.getLastname()
+                        ,student.getGroup()
+                        ,student.getYear()
+                        );
+            }
+            System.out.println("-------Groups:------ ");  
+            for (int i = 0; i < groupnames.size(); i++) { 
+                Groupname group = groupnames.get(i);
+                System.out.printf("Group: %s-%d%n"
+                        ,group.getGname()
+                        ,group.getYear()
+                        ,Arrays.toString(group.getStudents().toArray())
                         );
             }
         }   
